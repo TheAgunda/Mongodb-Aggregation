@@ -1,0 +1,127 @@
+//Condition with if and elese block
+{
+    $addFields: {
+        profileAttributes: {
+            $cond: {
+                if: {
+                    $or: [
+                        { $eq: ['$privacySettings.workInfo', PrivacySetting.PUBLIC] },
+                        { $eq: ['$privacySettings.bodyAppearance', PrivacySetting.PUBLIC] },
+                        { $eq: ['$privacySettings.personalInfo', PrivacySetting.PUBLIC] }
+                    ]
+                },
+                then: {
+                    $concatArrays: [
+                        {
+                            $cond: {
+                                if: { $gt: ['$bodyAppearance.height', null] },
+                                then: [{ icon: heightIcon, value: '$bodyAppearance.height' }],
+                                else: []
+                            }
+                        },
+                        {
+                            $cond: {
+                                if: { $gt: ['$bodyAppearance.bodyType', null] },
+                                then: [{ icon: bodyTypeIcon, value: '$bodyAppearance.bodyType' }],
+                                else: []
+                            }
+                        },
+                        {
+                            $cond: {
+                                if: { $gt: ['$bodyAppearance.eyeColor', null] },
+                                then: [{ icon: eyeColorIcon, value: '$bodyAppearance.eyeColor' }],
+                                else: []
+                            }
+                        },
+                        {
+                            $cond: {
+                                if: { $gt: ['$workInfo.jobTitle', null] },
+                                then: [{ icon: jobTitleIcon, value: '$workInfo.jobTitle' }],
+                                else: []
+                            }
+                        },
+                        {
+                            $cond: {
+                                if: { $gt: ['$personalInfo.incomeRange', null] },
+                                then: [{ icon: incomeRangeIcon, value: '$personalInfo.incomeRange' }],
+                                else: []
+                            }
+                        }
+                    ]
+                },
+                else: [
+                ],
+            },
+        }
+
+    }
+}
+//Condition with if and elese and array concat 
+{
+    $addFields: {
+        profileAttributes: {
+            $concatArrays: [
+                {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $eq: ['$privacySettings.bodyAppearance', PrivacySetting.PUBLIC] },
+                                { $gt: ['$bodyAppearance.height', null] },
+                            ]
+                        },
+                        then: [{ icon: heightIcon, value: '$bodyAppearance.height' }],
+                        else: []
+                    }
+                },
+                {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $eq: ['$privacySettings.bodyAppearance', PrivacySetting.PUBLIC] },
+                                { $gt: ['$bodyAppearance.bodyType', null] },
+                            ]
+                        },
+                        then: [{ icon: bodyTypeIcon, value: '$bodyAppearance.bodyType' }],
+                        else: []
+                    }
+                },
+                {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $eq: ['$privacySettings.bodyAppearance', PrivacySetting.PUBLIC] },
+                                { $gt: ['$bodyAppearance.eyeColor', null] },
+                            ]
+                        },
+                        then: [{ icon: eyeColorIcon, value: '$bodyAppearance.eyeColor' }],
+                        else: []
+                    }
+                },
+                {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $eq: ['$privacySettings.workInfo', PrivacySetting.PUBLIC] },
+                                { $gt: ['$workInfo.jobTitle', null] },
+                            ]
+                        },
+                        then: [{ icon: jobTitleIcon, value: '$workInfo.jobTitle' }],
+                        else: []
+                    }
+                },
+                {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $eq: ['$privacySettings.personalInfo', PrivacySetting.PUBLIC] },
+                                { $gt: ['$personalInfo.incomeRange', null] },
+                            ]
+                        },
+                        then: [{ icon: incomeRangeIcon, value: '$personalInfo.incomeRange' }],
+                        else: []
+                    }
+                }
+            ]
+        },
+    }
+}
