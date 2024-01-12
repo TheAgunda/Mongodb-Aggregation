@@ -125,3 +125,45 @@
         },
     }
 }
+//Condition with array field
+            {
+                $addFields: {
+                    personalInfo: {
+                        $cond: {
+                            if: { $eq: ['$privacySettings.personalInfo', PrivacySetting.PUBLIC] },
+                            then: {
+                                'aboutMe': { "$cond": [{ "$gt": ["$personalInfo.aboutMe", null] }, "$personalInfo.aboutMe", ""] },
+                                'fullName': { "$cond": [{ "$gt": ["$personalInfo.fullName", null] }, "$personalInfo.fullName", ""] },
+                                'birthday': { "$cond": [{ "$gt": ["$personalInfo.birthday", null] }, "$personalInfo.birthday", ""] },
+                            },
+                            else: {
+                                'aboutMe': { "$cond": [{ "$gt": ["$personalInfo.aboutMe", null] }, "$personalInfo.aboutMe", ""] },
+                                'fullName': { "$cond": [{ "$gt": ["$personalInfo.fullName", null] }, "$personalInfo.fullName", ""] },
+                                'birthday': { "$cond": [{ "$gt": ["$personalInfo.birthday", null] }, "$personalInfo.birthday", ""] },
+                            },
+                        },
+                    },
+                }
+            },
+            {
+                $addFields: {
+                    profilePicture: {
+                        $cond: {
+                            if: {
+                                $ne: [{ $size: "$imageRef" }, 0]
+                            },
+                            then: { $arrayElemAt: ["$imageRef.sourceUrl", 0] },
+                            else: ""
+                        }
+                    },
+                    coverPicture: {
+                        $cond: {
+                            if: {
+                                $ne: [{ $size: "$imageRef" }, 0]
+                            },
+                            then: { $arrayElemAt: ["$imageRef.sourceUrl", 0] },
+                            else: ""
+                        }
+                    }
+                }
+            },
